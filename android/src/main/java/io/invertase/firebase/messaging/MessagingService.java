@@ -16,6 +16,20 @@ public class MessagingService extends FirebaseMessagingService {
   private static final String TAG = "MessagingService";
 
   @Override
+  public void handleIntent(android.content.Intent intent){
+      Log.e(TAG, "handleIntent");
+      if (isForeground("com.clickipo")){
+          super.handleIntent(intent);
+      }
+  }
+  
+  public boolean isForeground(String myPackage) {
+    ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+    List<ActivityManager.RunningTaskInfo> runningTaskInfo = manager.getRunningTasks(1); 
+    ComponentName componentInfo = runningTaskInfo.get(0).topActivity;
+    return componentInfo.getPackageName().equals(myPackage);
+  }
+
   public void onMessageReceived(RemoteMessage remoteMessage) {
     Log.d(TAG, "Remote message received");
     Intent i = new Intent("io.invertase.firebase.messaging.ReceiveNotification");
